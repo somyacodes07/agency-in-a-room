@@ -110,8 +110,8 @@ Switch is the whole runtime. There is no app code; the repo is one template plus
 | **Templates** (`params`, `agents`, `room`, `kickoff`) | One document creates the 5 agents and the room, adds you, and posts the request. The form shows only *team name* and *client request*; everything else is under Advanced with sensible defaults. |
 | **Agent addressing** | `owner-agents` lets agents hand off by @-mention; `owner` locks the closer to the human. |
 | **Room instructions + room docs** | The shared playbook and rate card every agent reads; the closer writes the *Signed-off proposal* doc. |
-| **Bridges** | The demo runs in Mattermost (Console's built-in local chat). The same template runs in Telegram, Slack, Discord or Teams if you connect one, for example to approve from your phone. |
-| **Fallback chains** (`[Telegram, Mattermost, $first]`, `[antigravity, claude, codex, opencode, $first]`) | The template works on any setup without editing. |
+| **Bridges** | The template creates the room in Mattermost (Console's built-in local chat). The same agents also work in a Telegram group that Switch adopts as a room, so you can approve from your phone. |
+| **Fallback chains** (`[Mattermost, $first]`, `[antigravity, claude, codex, opencode, $first]`) | The template works on any setup without editing. |
 | **Team prefix** (`{team}-intake`, …) | Run several independent agencies (one per client or niche) from the same template. |
 
 The template passes Switch's own linter (`switch_core.template_lint`) with 0 errors and 0 warnings.
@@ -120,7 +120,7 @@ Without Switch there is no room, no handoff, no human sign-off and no human-only
 
 ## Optional: approve from your phone
 
-The demo approves in Console's built-in chat. That Mattermost listens only on your computer (`127.0.0.1`), so a phone can't reach it. To approve from your phone, connect **Telegram** once in Switch Console: create a bot with @BotFather and paste its token into Console's messaging apps. The template picks Telegram automatically when it's set up. Approving is then a reply from your phone. Step-by-step guide, ready-to-paste BotFather texts and a bot profile picture: [docs/telegram](docs/telegram/README.md).
+The demo approves in Console's built-in chat. That Mattermost listens only on your computer (`127.0.0.1`), so a phone can't reach it. To approve from your phone, use **Telegram**. Telegram bots can't create chats, and direct messages to the bot aren't routed, so you make a Telegram **group**, add the bot, and Switch adopts the group as a room. Then you invite the five agents and paste the room instructions. Approving is a reply from your phone. Step-by-step guide, paste-ready room instructions, BotFather texts and a bot profile picture: [docs/telegram](docs/telegram/README.md).
 
 ```
 @agency-closer APPROVE
@@ -137,7 +137,9 @@ The form's default is the trap request from [See it run](#see-it-run). Replace i
 | "This server has no messaging app" | Console started while Docker was off. Start Docker, quit Console (⌘Q) and reopen it. |
 | One agent replies, and the next never does | An agent created by hand defaults to `addressing: owner`. Set *who can talk to it* to **you and your agents**. Agents this template creates are already set. |
 | Want a fresh team, or one per client | Use another *Team name* on the form, for example `acme`. The same name reuses that team's existing agents. |
-| No reply on your phone | Connect Telegram (above). Mattermost on `127.0.0.1` is only reachable from this computer. |
+| No reply on your phone | Use a Telegram group (above). Mattermost on `127.0.0.1` is only reachable from this computer. |
+| Telegram: "This isn't where you talk to agents" | That's a direct message to the bot. Make a group, add the bot, and talk there ([guide](docs/telegram/README.md)). |
+| Telegram: agents stay silent in the group | Link your Telegram account in Console (Home → Messaging apps → Link my account), and check `!list-agents`. |
 
 ## Repository layout
 
@@ -146,7 +148,9 @@ install.sh                       one-command setup (macOS)
 agency-in-a-room.template.yaml   the Switch template: 5 agents + room + rate card + kickoff
 agents/*.md                      instruction text for each agent ({team} is filled in by Switch)
 rate-card.md                     the default rate card
-scripts/build_template.py        rebuilds the template from agents/*.md and rate-card.md
+scripts/build_template.py        rebuilds the template (and docs/telegram/room-instructions.txt)
+docs/screenshots/                the real run shown above
+docs/telegram/                   Telegram group setup, paste-ready room instructions, bot avatar
 ```
 
 To customise, edit the Markdown files, then run `python3 scripts/build_template.py`.

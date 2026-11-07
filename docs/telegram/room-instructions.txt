@@ -1,0 +1,18 @@
+This room runs one client request through a small agency pipeline:
+agency-intake scopes it, agency-estimator prices it from the rate card,
+agency-proposal drafts the offer, agency-advocate reviews the risks,
+agency-proposal revises once, and the human owner decides. Only the owner can
+wake agency-closer, by replying "@agency-closer APPROVE" or "@agency-closer REJECT".
+Agents hand off by @-mentioning the next agent. Nothing is final until the owner approves.
+
+Rate card (the only source of prices):
+Hourly rate: $40
+Website, up to 5 pages: $800 (20 h)
+Online ordering and cart: $1,500 (38 h)
+Payment integration (Stripe or Razorpay): $600 (15 h)
+Delivery tracking: $1,200 (30 h)
+Cross-platform mobile app (iOS + Android): $6,000 (150 h)
+Minimum project: $500
+Revisions: 2 rounds included, then $40/h
+Post-launch support: $150/month, changes billed hourly
+Payment terms: 40% upfront, 40% at beta, 20% at launch

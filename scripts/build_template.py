@@ -88,7 +88,8 @@ params:
   bridge:
     type: bridge
     label: Messaging app
-    default: [Telegram, Mattermost, $first]
+    description: Where the room is created. Telegram bots can't create chats, so for Telegram see docs/telegram in the repo.
+    default: [Mattermost, $first]
     input: advanced
   provider:
     type: provider
@@ -128,3 +129,13 @@ kickoff: |
 """
 (root / "agency-in-a-room.template.yaml").write_text(doc)
 print("wrote agency-in-a-room.template.yaml")
+
+# Telegram rooms are adopted from an existing group, not created by the template,
+# so write the room instructions out ready to paste (team "agency", default rate card).
+start = doc.index("  instructions: |\n    This room runs")
+end = doc.index("  docs:", start)
+room_instr = "\n".join(line[4:] for line in doc[start:end].splitlines()[1:])
+room_instr = room_instr.replace("{rate_card}", rate_card.strip()).replace("{team}", "agency")
+(root / "docs" / "telegram").mkdir(parents=True, exist_ok=True)
+(root / "docs" / "telegram" / "room-instructions.txt").write_text(room_instr.strip() + "\n")
+print("wrote docs/telegram/room-instructions.txt")
