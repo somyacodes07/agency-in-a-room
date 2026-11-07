@@ -1,0 +1,124 @@
+# Agency in a Room
+
+**A client request walks into a chat room. Five AI agents scope it, price it from your rate card, write the proposal and tear it apart. You approve from your phone. Then the closer sends it.**
+
+Built for the *Flip the Switch* hackathon (WeMakeDevs x DevTools Academy), Track 1: Best Business Workflow. Runs entirely on [Switch](https://github.com/sandbox-quantum/switch), the open-source tool that puts AI agents into team chat rooms.
+
+> 🎬 Demo video: _add link_ · ✍️ Blog post: _add link_
+
+---
+
+## Set up in one command
+
+You need [Docker Desktop](https://www.docker.com/products/docker-desktop/) running and [Switch Console](https://github.com/sandbox-quantum/switch) signed in with any coding-agent provider (Antigravity, Claude, Codex or OpenCode).
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/somyacodes07/agency-in-a-room/main/install.sh | sh
+```
+
+The script copies the template to your clipboard and opens Switch Console. In Console, open **Templates**, **paste** (⌘V) and click **Create**. That's it: five agents, one room, and a test request already posted.
+
+<details>
+<summary>Not on macOS, or prefer to do it by hand?</summary>
+
+Download [`agency-in-a-room.template.yaml`](agency-in-a-room.template.yaml) and drop it onto Switch Console's **Templates** page (or paste its contents). Click **Create**.
+
+</details>
+
+Everything on the form is optional. Under *Advanced* you can paste **your own rate card** and pick the messaging app, provider and machine.
+
+---
+
+## The problem
+
+Small agencies and freelancers lose money before a project starts. A client asks for "a full website with ordering, payments and an app, live in 3 days, for $200, with free changes forever". A tired person says yes. The bad scope, impossible deadline and open-ended terms only hurt weeks later.
+
+## The team
+
+```
+client request
+   │
+   ▼
+@intake ──► @estimator ──► @proposal ──► @advocate ──► @proposal ──► @advocate ──► 📱 YOU ──► @closer
+ scope       hours × rate    offer         risks +        revised      verdict        APPROVE     client email,
+ out-of-     card, Phase 1   ≤250 words    fixes          once                        / REJECT    kickoff list,
+ scope       that fits                                                                            signed-off doc
+```
+
+| Agent | Job | Can be woken by |
+|---|---|---|
+| **intake** | Summary, in scope, out of scope, the client's constraints quoted exactly, at most 2 questions. | you and your agents |
+| **estimator** | Prices every item from the room's **rate card** (never invents rates), shows the gap against the client's budget, and finds a *Phase 1* the budget actually pays for. | you and your agents |
+| **proposal** | Deliverables, timeline, price and terms in under 250 words. Revises once from the advocate's fixes. | you and your agents |
+| **advocate** | Devil's Advocate. Scope creep, impossible deadline, underpricing, vague terms, each with quoted evidence, a severity and a fix. Then a final verdict, and it hands the decision to you. | you and your agents |
+| **closer** | On **APPROVE**: writes the client email and a kickoff checklist, and saves the final proposal as a *Signed-off proposal* doc in the room. On **REJECT**: a polite decline that offers Phase 1. | **you only** |
+
+### Guardrails, enforced by Switch, not just by prompts
+
+- **Only a human can close the deal.** The closer has `addressing: owner`, so Switch delivers only *your* messages to it. Even if another agent tried to `@closer APPROVE`, Switch would not wake it.
+- **No infinite loops.** The advocate asks for one revision, and the proposal revises once.
+- **Prices come from your data.** The rate card is a template param, written into the room's instructions and attached as a *Rate card* doc.
+
+## How Switch is used
+
+Switch is the whole runtime. There is no app code; the repo is one template plus the texts it is built from.
+
+| Switch feature | Used for |
+|---|---|
+| **Templates** (`params`, `agents`, `room`, `kickoff`) | One document creates the 5 agents and the room, adds you, and posts the request. The form shows only *team name* and *client request*; everything else is under Advanced with sensible defaults. |
+| **Agent addressing** | `owner-agents` lets agents hand off by @-mention; `owner` locks the closer to the human. |
+| **Room instructions + room docs** | The shared playbook and rate card every agent reads; the closer writes the *Signed-off proposal* doc. |
+| **Bridges** | The same room runs in Telegram (approve from your phone) or Mattermost (Console's built-in local chat). Slack, Discord and Teams work too. |
+| **Fallback chains** (`[Telegram, Mattermost, $first]`, `[antigravity, claude, codex, opencode, $first]`) | The template works on any setup without editing. |
+| **Team prefix** (`{team}-intake`, …) | Run several independent agencies (one per client or niche) from the same template. |
+
+The template passes Switch's own linter (`switch_core.template_lint`) with 0 errors and 0 warnings.
+
+Without Switch there is no room, no handoff, no phone approval and no human-only closer: the project stops working.
+
+## Approving from your phone
+
+Console's built-in Mattermost listens only on your computer (`127.0.0.1`), so a phone can't reach it. To approve from your phone, connect **Telegram** once in Switch Console: create a bot with @BotFather and paste its token into Console's messaging apps. The template picks Telegram automatically when it's set up. The room becomes a Telegram group, and approving is a reply:
+
+```
+@agency-closer APPROVE
+```
+
+## Try the trap request
+
+The form's default request is a deliberate trap:
+
+> Full website with online ordering, payments, delivery tracking and a mobile app, live in 3 days, $200 budget, free changes after launch.
+
+What should happen with the default rate card:
+
+- **intake** quotes the $200 / 3 days / "free changes" constraints and puts post-launch changes out of scope.
+- **estimator** prices the full scope from the rate card at roughly $10,000 and over 250 hours, far over budget. Its Phase 1 is the smallest useful slice, priced at the $500 minimum.
+- **advocate** flags the deadline, the underpricing and "free changes after launch" as high severity.
+- **proposal** revises, the advocate gives its verdict, and you decide.
+- **closer** drafts the client email and saves the signed-off doc.
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| "This server has no messaging app" | Console started while Docker was off. Start Docker, quit Console (⌘Q) and reopen it. |
+| One agent replies, and the next never does | An agent created by hand defaults to `addressing: owner`. Set *who can talk to it* to **you and your agents**. Agents this template creates are already set. |
+| Want a fresh team, or one per client | Use another *Team name* on the form, for example `acme`. The same name reuses that team's existing agents. |
+| No reply on your phone | Connect Telegram (above). Mattermost on `127.0.0.1` is only reachable from this computer. |
+
+## Repository layout
+
+```
+install.sh                       one-command setup (macOS)
+agency-in-a-room.template.yaml   the Switch template: 5 agents + room + rate card + kickoff
+agents/*.md                      instruction text for each agent ({team} is filled in by Switch)
+rate-card.md                     the default rate card
+scripts/build_template.py        rebuilds the template from agents/*.md and rate-card.md
+```
+
+To customise, edit the Markdown files, then run `python3 scripts/build_template.py`.
+
+## License
+
+MIT
