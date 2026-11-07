@@ -1,6 +1,6 @@
 # Agency in a Room
 
-**A client request walks into a chat room. Five AI agents scope it, price it from your rate card, write the proposal and tear it apart. Nothing is final until you approve in the chat. Then the closer sends it. Real run: request to signed-off proposal in 5 minutes.**
+**A client request walks into a chat room. Five AI agents scope it, price it from your rate card, write the proposal and tear it apart. Nothing is final until you approve, even from your phone. Then the closer sends it. Real run: request to signed-off proposal in 5 minutes.**
 
 Built for the *Flip the Switch* hackathon (WeMakeDevs x DevTools Academy), Track 1: Best Business Workflow. Runs entirely on [Switch](https://github.com/sandbox-quantum/switch), the open-source tool that puts AI agents into team chat rooms.
 
@@ -67,7 +67,21 @@ A real run of the trap request below, unedited. It took **5 minutes from request
 
 ![approval and closer](docs/screenshots/08_approval-closer.png)
 
-Since this run, the advocate's output has been tidied (one heading per risk), and the closer signs emails with your agency and client names instead of placeholders.
+### Second run: on Telegram, approved from a phone
+
+The same five agents in a Telegram group (setup: [docs/telegram](docs/telegram/README.md)). Request at 11:54, verdict at 12:01, closer done at 12:10 after the owner approved from the phone. This time intake put native apps out of scope, so the estimate came to **$4,100 against $200 (20.5× short)**. The advocate flagged three **High** risks: scope creep, the deadline and underpricing.
+
+| intake | estimator | advocate |
+|---|---|---|
+| ![intake on Telegram](docs/screenshots/telegram/tg-01-intake.png) | ![estimator on Telegram](docs/screenshots/telegram/tg-02-estimator.png) | ![advocate on Telegram](docs/screenshots/telegram/tg-03-advocate.png) |
+
+**The guardrail fired on its own.** The advocate's verdict ends by telling the owner to reply `@agency-closer APPROVE`. Switch read that as the advocate addressing the closer and refused it, because the closer accepts only its owner. The closer replied: *"You're not permitted to direct messages to me in this room — my operator has restricted who can address me here."* Minutes later the owner sent the same words from a phone, and the closer ran.
+
+| ① Verdict, and Switch blocks the agent | ② Owner approves from the phone | ③ Closer: client email + checklist |
+|---|---|---|
+| <img src="docs/screenshots/telegram/tg-04-phone-verdict-guardrail.jpg" width="260" alt="Advocate's verdict; closer refuses the advocate"> | <img src="docs/screenshots/telegram/tg-05-phone-approve.jpg" width="260" alt="Owner sends @agency-closer APPROVE from a phone"> | <img src="docs/screenshots/telegram/tg-06-phone-closer.jpg" width="260" alt="Closer's client email and kickoff checklist"> |
+
+Both runs used the first version of the agent texts. Since then, the advocate writes one heading per risk, the estimator writes one line per item (Telegram shows tables as raw text, as in the estimator shot above), and the closer signs emails with your agency and client names instead of "[Client Name]".
 
 ---
 
@@ -97,7 +111,7 @@ client request
 
 ### Guardrails, enforced by Switch, not just by prompts
 
-- **Only a human can close the deal.** The closer has `addressing: owner`, so Switch delivers only *your* messages to it. Even if another agent tried to `@closer APPROVE`, Switch would not wake it.
+- **Only a human can close the deal.** The closer has `addressing: owner`, so Switch delivers only *your* messages to it. In the [Telegram run](#second-run-on-telegram-approved-from-a-phone) the advocate's message mentioned `@agency-closer APPROVE`, and Switch refused to deliver it: the closer answered the advocate with "You're not permitted to direct messages to me". It ran only when the human sent the same words.
 - **No infinite loops.** The advocate asks for one revision, and the proposal revises once.
 - **Prices come from your data.** The rate card is a template param, written into the room's instructions and attached as a *Rate card* doc.
 
@@ -118,9 +132,9 @@ The template passes Switch's own linter (`switch_core.template_lint`) with 0 err
 
 Without Switch there is no room, no handoff, no human sign-off and no human-only closer: the project stops working.
 
-## Optional: approve from your phone
+## Approve from your phone
 
-The demo approves in Console's built-in chat. That Mattermost listens only on your computer (`127.0.0.1`), so a phone can't reach it. To approve from your phone, use **Telegram**. Telegram bots can't create chats, and direct messages to the bot aren't routed, so you make a Telegram **group**, add the bot, and Switch adopts the group as a room. Then you invite the five agents and paste the room instructions. Approving is a reply from your phone. Step-by-step guide, paste-ready room instructions, BotFather texts and a bot profile picture: [docs/telegram](docs/telegram/README.md).
+The first run approves in Console's built-in chat; the second run approves from a phone over Telegram. That Mattermost listens only on your computer (`127.0.0.1`), so a phone can't reach it. To approve from your phone, use **Telegram**. Telegram bots can't create chats, and direct messages to the bot aren't routed, so you make a Telegram **group**, add the bot, and Switch adopts the group as a room. Then you invite the five agents and paste the room instructions. Approving is a reply from your phone. Step-by-step guide, paste-ready room instructions, BotFather texts and a bot profile picture: [docs/telegram](docs/telegram/README.md).
 
 ```
 @agency-closer APPROVE
