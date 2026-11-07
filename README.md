@@ -4,7 +4,9 @@
 
 Built for the *Flip the Switch* hackathon (WeMakeDevs x DevTools Academy), Track 1: Best Business Workflow. Runs entirely on [Switch](https://github.com/sandbox-quantum/switch), the open-source tool that puts AI agents into team chat rooms.
 
-> 🎬 Demo video: _add link_ · ✍️ Blog post: _add link_
+> 🎬 **Demo video (2:09):** https://youtu.be/SQkVr7oPoX8 · ✍️ **Blog post:** [I built a 5-agent agency in a chat room](https://somyacodes.hashnode.dev/i-built-a-5-agent-agency-in-a-chat-room)
+
+[![Watch the demo](https://img.youtube.com/vi/SQkVr7oPoX8/maxresdefault.jpg)](https://youtu.be/SQkVr7oPoX8)
 
 ---
 
