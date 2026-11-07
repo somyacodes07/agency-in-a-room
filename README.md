@@ -120,7 +120,7 @@ Without Switch there is no room, no handoff, no human sign-off and no human-only
 
 ## Optional: approve from your phone
 
-The demo approves in Console's built-in chat. That Mattermost listens only on your computer (`127.0.0.1`), so a phone can't reach it. To approve from your phone, connect **Telegram** once in Switch Console: create a bot with @BotFather and paste its token into Console's messaging apps. The template picks Telegram automatically when it's set up. The room becomes a Telegram group, and approving is a reply:
+The demo approves in Console's built-in chat. That Mattermost listens only on your computer (`127.0.0.1`), so a phone can't reach it. To approve from your phone, connect **Telegram** once in Switch Console: create a bot with @BotFather and paste its token into Console's messaging apps. The template picks Telegram automatically when it's set up. Approving is then a reply from your phone. Step-by-step guide, ready-to-paste BotFather texts and a bot profile picture: [docs/telegram](docs/telegram/README.md).
 
 ```
 @agency-closer APPROVE
