@@ -1,7 +1,7 @@
 #!/bin/sh
 # Agency in a Room: one-command setup for Switch Console on macOS.
 # Copies the template to your clipboard and opens Switch Console.
-# Then: Templates page -> paste (Cmd+V) -> Create.
+# Then: Templates page -> paste (Cmd+V) -> Create all.
 set -e
 
 URL="https://raw.githubusercontent.com/somyacodes07/agency-in-a-room/main/agency-in-a-room.template.yaml"
@@ -27,5 +27,5 @@ open -a "Switch Console"
 
 echo ""
 echo "Template copied to your clipboard."
-echo "In Switch Console: open Templates, paste (Cmd+V), then click Create."
+echo "In Switch Console: open Templates, paste (Cmd+V), then click Create all."
 echo "Five agents and a room appear, and the test request is posted automatically."

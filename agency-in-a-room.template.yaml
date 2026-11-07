@@ -16,6 +16,18 @@ params:
     label: Client request
     multiline: true
     default: "Full website with online ordering, payments, delivery tracking and a mobile app, live in 3 days, $200 budget, free changes after launch."
+  client_name:
+    type: string
+    label: Client name
+    description: Used in the closer's email greeting.
+    default: there
+    input: advanced
+  agency_name:
+    type: string
+    label: Your agency name
+    description: Used to sign the closer's email.
+    default: Agency in a Room Studio
+    input: advanced
   rate_card:
     type: string
     label: Your rate card
@@ -159,7 +171,12 @@ agents:
       3. **Underpricing**: the price is below the estimator's total, or the client's budget cannot pay for what is promised.
       4. **Vague terms**: no payment schedule, no revision limit, no change-request process, no support terms.
 
-      Reply with a numbered list. For each risk found give: the risk, the evidence (quote the line), its severity (High / Medium / Low), and a concrete fix. Skip risks that are not present. End with:
+      Start with "**Risk review**". Then, for each risk found, write a bold heading line like "**1. Unrealistic deadline (High)**" followed by exactly three bullets:
+      - **Evidence**: the line you are quoting
+      - **Why it hurts**: one sentence
+      - **Fix**: one concrete change
+
+      Do not number the bullets. Skip risks that are not present. End with:
 
       @{team}-proposal please revise with these fixes.
 
@@ -191,11 +208,11 @@ agents:
 
       1. Create a document in this room named "Signed-off proposal" containing the final proposal, the date, and the line "Approved by the owner in chat".
       2. Reply in the room with:
-         - **Client email**: a short, friendly email to the client presenting the proposal, under 150 words, with a clear next step (sign and pay the first instalment).
+         - **Client email**: a short, friendly email to the client presenting the proposal, under 150 words, with a clear next step (sign and pay the first instalment). Open with "Hi {client_name}," and sign it "{agency_name}". Use no other placeholders.
          - **Kickoff checklist**: 5 or fewer bullets of what happens in the first week.
          - One line confirming the document was saved, or saying it could not be saved.
 
-      **On REJECT**, reply with a short, polite client email (under 120 words) that declines the original request as asked, explains why in one sentence, and offers the Phase 1 option from the proposal as an alternative. Save nothing.
+      **On REJECT**, reply with a short, polite client email (under 120 words, same greeting and signature) that declines the original request as asked, explains why in one sentence, and offers the Phase 1 option from the proposal as an alternative. Save nothing.
 
       Rules:
       - Act once per decision, then stop.

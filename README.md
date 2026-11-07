@@ -1,6 +1,6 @@
 # Agency in a Room
 
-**A client request walks into a chat room. Five AI agents scope it, price it from your rate card, write the proposal and tear it apart. You approve from your phone. Then the closer sends it.**
+**A client request walks into a chat room. Five AI agents scope it, price it from your rate card, write the proposal and tear it apart. Nothing is final until you approve in the chat. Then the closer sends it. Real run: request to signed-off proposal in 5 minutes.**
 
 Built for the *Flip the Switch* hackathon (WeMakeDevs x DevTools Academy), Track 1: Best Business Workflow. Runs entirely on [Switch](https://github.com/sandbox-quantum/switch), the open-source tool that puts AI agents into team chat rooms.
 
@@ -16,16 +16,58 @@ You need [Docker Desktop](https://www.docker.com/products/docker-desktop/) runni
 curl -fsSL https://raw.githubusercontent.com/somyacodes07/agency-in-a-room/main/install.sh | sh
 ```
 
-The script copies the template to your clipboard and opens Switch Console. In Console, open **Templates**, **paste** (⌘V) and click **Create**. That's it: five agents, one room, and a test request already posted.
+The script copies the template to your clipboard and opens Switch Console. In Console, open **Templates**, **paste** (⌘V) and click **Create all**. That's it: five agents, one room, and a test request already posted.
 
 <details>
 <summary>Not on macOS, or prefer to do it by hand?</summary>
 
-Download [`agency-in-a-room.template.yaml`](agency-in-a-room.template.yaml) and drop it onto Switch Console's **Templates** page (or paste its contents). Click **Create**.
+Download [`agency-in-a-room.template.yaml`](agency-in-a-room.template.yaml) and drop it onto Switch Console's **Templates** page (or paste its contents). Click **Create all**.
 
 </details>
 
-Everything on the form is optional. Under *Advanced* you can paste **your own rate card** and pick the messaging app, provider and machine.
+Everything on the form is optional. Under *Advanced* you can paste **your own rate card**, set your agency and client names, and pick the messaging app, provider and machine.
+
+---
+
+## See it run
+
+A real run of the trap request below, unedited. It took **5 minutes from request (10:19) to signed-off proposal (10:24)**.
+
+> Full website with online ordering, payments, delivery tracking and a mobile app, live in 3 days, $200 budget, free changes after launch.
+
+**1. One form, one click.** The template shows two fields; everything else has defaults.
+
+![Template form in Switch Console](docs/screenshots/01_create.png)
+
+**2. intake scopes it.** It puts post-launch changes and uncapped revisions out of scope, quotes the client's constraints exactly, asks 2 questions and hands off to `@agency-estimator`.
+
+![intake's scope](docs/screenshots/02_intake.png)
+
+**3. estimator prices it from the rate card.** 253 hours, **$10,100 against a $200 budget (50.5× short)**, and 43 working days against 3 (14.3× longer). It refuses to pretend a useful slice fits $200.
+
+![estimator's table](docs/screenshots/03_estimator.png)
+
+**4. proposal writes the offer.** Three phases, Phase 1 at $2,900, 2 revision rounds, and "no free changes".
+
+![first proposal](docs/screenshots/04_proposal.png)
+
+**5. advocate attacks it.** The 3-day deadline is **High**: it isn't formally rejected. Underpricing is **High**: even Phase 1 is 14× the budget. Delivery tracking is a vague deliverable (**Medium**). Each risk comes with quoted evidence and a fix.
+
+![advocate's risk review](docs/screenshots/05_advocate.png)
+
+**6. proposal revises once.** It formally rejects the 3-day deadline, limits tracking to internal order status, and requires written client commitment to the budget before any work.
+
+![revised proposal](docs/screenshots/06_revised.png)
+
+**7. advocate signs off and hands the decision to the human.** Verdict: Ready. It lists each fixed risk, then asks for `@agency-closer APPROVE` or `REJECT`.
+
+![final verdict](docs/screenshots/07_final-verdict.png)
+
+**8. Only the human can close.** The owner replies `@agency-closer APPROVE`. The closer saves a **"Signed-off proposal" room doc** and writes the client email and a week-1 kickoff checklist.
+
+![approval and closer](docs/screenshots/08_approval-closer.png)
+
+Since this run, the advocate's output has been tidied (one heading per risk), and the closer signs emails with your agency and client names instead of placeholders.
 
 ---
 
@@ -39,7 +81,7 @@ Small agencies and freelancers lose money before a project starts. A client asks
 client request
    │
    ▼
-@intake ──► @estimator ──► @proposal ──► @advocate ──► @proposal ──► @advocate ──► 📱 YOU ──► @closer
+@intake ──► @estimator ──► @proposal ──► @advocate ──► @proposal ──► @advocate ──► 🧑 YOU ──► @closer
  scope       hours × rate    offer         risks +        revised      verdict        APPROVE     client email,
  out-of-     card, Phase 1   ≤250 words    fixes          once                        / REJECT    kickoff list,
  scope       that fits                                                                            signed-off doc
@@ -68,35 +110,25 @@ Switch is the whole runtime. There is no app code; the repo is one template plus
 | **Templates** (`params`, `agents`, `room`, `kickoff`) | One document creates the 5 agents and the room, adds you, and posts the request. The form shows only *team name* and *client request*; everything else is under Advanced with sensible defaults. |
 | **Agent addressing** | `owner-agents` lets agents hand off by @-mention; `owner` locks the closer to the human. |
 | **Room instructions + room docs** | The shared playbook and rate card every agent reads; the closer writes the *Signed-off proposal* doc. |
-| **Bridges** | The same room runs in Telegram (approve from your phone) or Mattermost (Console's built-in local chat). Slack, Discord and Teams work too. |
+| **Bridges** | The demo runs in Mattermost (Console's built-in local chat). The same template runs in Telegram, Slack, Discord or Teams if you connect one, for example to approve from your phone. |
 | **Fallback chains** (`[Telegram, Mattermost, $first]`, `[antigravity, claude, codex, opencode, $first]`) | The template works on any setup without editing. |
 | **Team prefix** (`{team}-intake`, …) | Run several independent agencies (one per client or niche) from the same template. |
 
 The template passes Switch's own linter (`switch_core.template_lint`) with 0 errors and 0 warnings.
 
-Without Switch there is no room, no handoff, no phone approval and no human-only closer: the project stops working.
+Without Switch there is no room, no handoff, no human sign-off and no human-only closer: the project stops working.
 
-## Approving from your phone
+## Optional: approve from your phone
 
-Console's built-in Mattermost listens only on your computer (`127.0.0.1`), so a phone can't reach it. To approve from your phone, connect **Telegram** once in Switch Console: create a bot with @BotFather and paste its token into Console's messaging apps. The template picks Telegram automatically when it's set up. The room becomes a Telegram group, and approving is a reply:
+The demo approves in Console's built-in chat. That Mattermost listens only on your computer (`127.0.0.1`), so a phone can't reach it. To approve from your phone, connect **Telegram** once in Switch Console: create a bot with @BotFather and paste its token into Console's messaging apps. The template picks Telegram automatically when it's set up. The room becomes a Telegram group, and approving is a reply:
 
 ```
 @agency-closer APPROVE
 ```
 
-## Try the trap request
+## Try your own request
 
-The form's default request is a deliberate trap:
-
-> Full website with online ordering, payments, delivery tracking and a mobile app, live in 3 days, $200 budget, free changes after launch.
-
-What should happen with the default rate card:
-
-- **intake** quotes the $200 / 3 days / "free changes" constraints and puts post-launch changes out of scope.
-- **estimator** prices the full scope from the rate card at roughly $10,000 and over 250 hours, far over budget. Its Phase 1 is the smallest useful slice, priced at the $500 minimum.
-- **advocate** flags the deadline, the underpricing and "free changes after launch" as high severity.
-- **proposal** revises, the advocate gives its verdict, and you decide.
-- **closer** drafts the client email and saves the signed-off doc.
+The form's default is the trap request from [See it run](#see-it-run). Replace it with a real client message, and paste your real rates under *Advanced*. Agents are language models, so wording and numbers vary between runs; the structure and the handoffs stay the same.
 
 ## Troubleshooting
 

@@ -65,6 +65,18 @@ params:
     label: Client request
     multiline: true
     default: {quoted(request)}
+  client_name:
+    type: string
+    label: Client name
+    description: Used in the closer's email greeting.
+    default: there
+    input: advanced
+  agency_name:
+    type: string
+    label: Your agency name
+    description: Used to sign the closer's email.
+    default: Agency in a Room Studio
+    input: advanced
   rate_card:
     type: string
     label: Your rate card
